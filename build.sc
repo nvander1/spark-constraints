@@ -1,5 +1,3 @@
-import $ivy.`com.lihaoyi::os-lib:0.2.6`
-
 import mill._, scalalib._, publish._
 import mill.eval.PathRef
 import coursier.MavenRepository
@@ -13,7 +11,7 @@ object CrossBase {
 
   def parts(cs: Seq[String]) = cs.map(c => c.split('.').inits.filter(_.nonEmpty).toSeq)
 
-  def crossVersionPaths(versions: Seq[String], f: String => os.Path) =
+  def crossVersionPaths(versions: Seq[String], f: String => ammonite.ops.Path) =
     cartesianProduct(parts(versions)).map { segmentGroups =>
       segmentGroups.map(_.mkString("."))
     }.map(xs => PathRef(f(xs.mkString("__"))))
