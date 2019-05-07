@@ -36,6 +36,30 @@ friendsDF
 friendsDF.constraints.foreach(println)
 ```
 
+## Building and Testing
+The project is built with [mill](https://github.com/lihaoyi/mill).
+spark-constraints supports the following versions of Scala/Spark:
+
+- Scala 2.11.8 / Spark 2.3.0
+- Scala 2.11.8 / Spark 2.4.0
+- Scala 2.12.4 / Spark 2.4.0
+
+Other verisons may work, but are not officially supported.
+
+To build the project and run the tests, make sure you have mill installed
+and run the following at the project root:
+
+```
+./scripts/test.sh
+```
+
+To compile/test just a specific version use:
+
+```
+mill "spark-constraints[2.11.8,2.3.0].compile
+mill "spark-constraints[2.11.8,2.3.0].test
+```
+
 ## Related Work
 Check out [spark-daria](https://github.com/MrPowers/spark-daria) if you need
 help ensuring your datasets have the correct schema (among other cool features!).
