@@ -1,6 +1,10 @@
+import $ivy.`com.lihaoyi::os-lib:0.2.6`
+
 import mill._, scalalib._, publish._
 import mill.eval.PathRef
 import coursier.MavenRepository
+
+
 
 object CrossBase {
   def cartesianProduct[T](seqs: Seq[Seq[T]]): Seq[Seq[T]] = {

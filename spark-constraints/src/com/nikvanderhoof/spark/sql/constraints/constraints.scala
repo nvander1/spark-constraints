@@ -3,13 +3,6 @@ package com.nikvanderhoof.spark.sql.constraints
 import org.apache.spark.sql.{Column, Dataset, DataFrame}
 import org.apache.spark.sql.functions.{coalesce, col, lit}
 
-trait Constraint[T] { constraint =>
-  def dataset: Dataset[T]
-  def violations: DataFrame
-  def isViolated: Boolean = !constraint.holds
-  def holds: Boolean = violations.isEmpty
-}
-
 case class Check[T](dataset: Dataset[T], condition: Column)
     extends Constraint[T] {
   val violations: DataFrame = dataset.where(!condition).toDF
