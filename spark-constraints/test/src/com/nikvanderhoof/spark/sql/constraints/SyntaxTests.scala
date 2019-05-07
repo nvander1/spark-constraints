@@ -6,18 +6,22 @@ import org.apache.spark.sql.functions.{expr, col}
 import utest._
 
 object SyntaxTests extends TestSuite with UtestSparkSession {
+
   import spark.implicits._
   import syntax._
+
   val peopleDF = Seq(
     (1, "Alice", 25),
     (2, "Bob", 20),
     (3, "Carol", 26)
   ).toDF("id", "name", "age")
+
   val booksDF = Seq(
     (1, "Introduction to Programming"),
     (2, "Number Systems"),
     (3, "Partial Differential Equations")
   ).toDF("id", "title")
+
   val bookAuthorsDF = Seq(
     (1, 1),
     (2, 2),
@@ -25,13 +29,16 @@ object SyntaxTests extends TestSuite with UtestSparkSession {
   ).toDF("people_id", "book_id")
 
   val tests = Tests {
+
     def checkConstraintsSize(df: DataFrame, size: Int) =
       assert(df.constraints.size == size)
+
     def checkConstraintsBeforeAndAfterDrop(df: DataFrame, size: Int) = {
       checkConstraintsSize(df, size)
       df.dropAllConstraints
       assert(df.constraints.size == 0)
     }
+
     "addConstraint syntax" - {
       peopleDF
         .addConstraint("PK", primaryKey('id))
@@ -61,5 +68,7 @@ object SyntaxTests extends TestSuite with UtestSparkSession {
       bookAuthorsDF.dropConstraint("FK_books")
       checkConstraintsSize(bookAuthorsDF, 2)
     }
+
   }
+
 }

@@ -8,11 +8,14 @@ import org.apache.spark.sql.types.{IntegerType, LongType}
 import utest._
 
 object ConstraintTests extends TestSuite with UtestSparkSession with DataFrameComparer {
+
   import spark.implicits._
+
   def assertConstraintViolated(constraint: Constraint[_], violations: Dataset[_]) = {
     assert(constraint.isViolated)
     assertSmallDataFrameEquality(constraint.violations, violations.toDF)
   }
+
   val tests = Tests {
     "check(true) should not flag any rows as violations" - {
       def testCheckTrue(ds: Dataset[_]) = {
@@ -24,6 +27,7 @@ object ConstraintTests extends TestSuite with UtestSparkSession with DataFrameCo
       * - testCheckTrue(spark.range(0, 1000000))
       * - testCheckTrue(spark.range(0, 1000000).select(col("id"), rand, rand))
     }
+
     "check(false) should flag every row as a violation" - {
       def testCheckFalse(ds: Dataset[_]) = {
         val constraint = Check(ds, lit(false))
@@ -33,6 +37,7 @@ object ConstraintTests extends TestSuite with UtestSparkSession with DataFrameCo
       * - testCheckFalse(spark.range(0, 1000000))
       * - testCheckFalse(spark.range(0, 1000000).select(col("id"), rand, rand))
     }
+
     "check(<EXPR>) should correctly identify violations" - {
       "when there are none" - {
         val ds = spark.range(0, 1000)
@@ -45,6 +50,7 @@ object ConstraintTests extends TestSuite with UtestSparkSession with DataFrameCo
         assertConstraintViolated(constraint, ds)
       }
     }
+
     "notNull should correctly identify violations" - {
       "when there are none" - {
         val ds = spark.range(0, 1000)
@@ -57,6 +63,7 @@ object ConstraintTests extends TestSuite with UtestSparkSession with DataFrameCo
         assertConstraintViolated(constraint, ds)
       }
     }
+
     "unique should correctly identify violations" - {
       "when there are none" - {
         val ds = spark.range(0, 1000)
@@ -78,6 +85,7 @@ object ConstraintTests extends TestSuite with UtestSparkSession with DataFrameCo
         assertConstraintViolated(constraint, expectedViolations)
       }
     }
+
     "primary key should correctly identify violations" - {
       "when there are none" - {
         val ds = spark.range(0, 1000)
@@ -106,6 +114,7 @@ object ConstraintTests extends TestSuite with UtestSparkSession with DataFrameCo
           assertConstraintViolated(constraint, expectedViolations)
         }
       }
+
       "when they key is unique, but some entries are null" - {
         val ds = spark.createDF(
           List((1), (null), (3)),
@@ -119,6 +128,7 @@ object ConstraintTests extends TestSuite with UtestSparkSession with DataFrameCo
         assertConstraintViolated(constraint, expectedViolations)
       }
     }
+
     "foreign key should correctly identify violations" - {
       "when there are none" - {
         val a = spark.range(0, 100)
@@ -134,5 +144,7 @@ object ConstraintTests extends TestSuite with UtestSparkSession with DataFrameCo
         assertConstraintViolated(constraint, expectedViolations)
       }
     }
+
   }
+
 }
