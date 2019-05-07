@@ -1,4 +1,5 @@
 import mill._, scalalib._, publish._
+import mill.scalalib.api.Util.{scalaBinaryVersion => binaryVersion}
 import mill.eval.PathRef
 import coursier.MavenRepository
 
@@ -21,6 +22,8 @@ trait CrossScalaSparkModule extends ScalaModule {
   def crossScalaVersion: String
   def crossSparkVersion: String
   def scalaVersion = crossScalaVersion
+  override def artifactSuffix =
+    s"_${binaryVersion(crossScalaVersion)}_${binaryVersion(crossSparkVersion)}"
   override def millSourcePath = super.millSourcePath / ammonite.ops.up / ammonite.ops.up
   override def sources = T.sources {
     super.sources() ++
