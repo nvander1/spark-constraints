@@ -1,4 +1,4 @@
-# Spark Constraints <img src=./logo.png alt="spark-constraints" width="128">
+# Spark Constraints <img src=./logo.png alt="spark-constraints" width="64">
 
 SQL-like constraints for your Spark datasets!
 
