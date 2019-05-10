@@ -39,7 +39,7 @@ ivy"com.nikvanderhoof::spark-constraints:0.1.0_spark2.4-SNAPSHOT"
 
 And the following in Sbt:
 ```scala
-resolvers += "snapshots" at "https://oss.sonatype.org/content/repositories"
+resolvers += "snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 
 "com.nikvanderhoof" %% "spark-constraints" % "0.1.0_spark2.4-SNAPSHOT"
 ```
