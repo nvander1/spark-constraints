@@ -22,8 +22,6 @@ trait CrossScalaSparkModule extends ScalaModule {
   def crossScalaVersion: String
   def crossSparkVersion: String
   def scalaVersion = crossScalaVersion
-  override def artifactSuffix =
-    s"_${binaryVersion(crossScalaVersion)}_${binaryVersion(crossSparkVersion)}"
   override def millSourcePath = super.millSourcePath / ammonite.ops.up / ammonite.ops.up
   override def sources = T.sources {
     super.sources() ++
@@ -49,7 +47,7 @@ object `spark-constraints` extends Cross[SparkConstraintModule](crossMatrix: _*)
 
 class SparkConstraintModule(val crossScalaVersion: String, val crossSparkVersion: String)
 extends CrossScalaSparkModule with PublishModule {
-  def publishVersion = "0.1.0"
+  def publishVersion = s"0.1.0_spark${binaryVersion(crossSparkVersion)}-SNAPSHOT"
 
   def artifactName = "spark-constraints"
 

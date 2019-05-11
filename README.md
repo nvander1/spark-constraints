@@ -1,4 +1,4 @@
-# Spark Constraints
+# Spark Constraints <img src=./logo.png alt="spark-constraints" width="64">
 
 SQL-like constraints for your Spark datasets!
 
@@ -18,6 +18,31 @@ Suppose you're trying to load 2 million rows in a database and one row fails a d
 This puts you in the uncomfortable position of either having to figure out what rows weren't loaded or rolling back the 1.2 million rows that were loaded in the database.
 
 spark-constraints saves you from fighting with database validations when loading data from Spark into a database.
+
+## Getting Started
+
+Use the following to install spark-constraints in an ammonite repl:
+```scala
+interp.repositories() ++=
+  Seq(coursier.MavenRepository("https://oss.sonatype.org/content/repositories/snapshots"))
+
+import $ivy.`com.nikvanderhoof::spark-constraints:0.1.0_spark2.4-SNAPSHOT`
+```
+
+The following in a Mill build:
+```scala
+def repositories = super.repositories ++
+  Seq(coursier.MavenRepository("https://oss.sonatype.org/content/repositories/snapshots"))
+
+ivy"com.nikvanderhoof::spark-constraints:0.1.0_spark2.4-SNAPSHOT"
+```
+
+And the following in Sbt:
+```scala
+resolvers += "snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+
+"com.nikvanderhoof" %% "spark-constraints" % "0.1.0_spark2.4-SNAPSHOT"
+```
 
 ### Example
 
