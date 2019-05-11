@@ -65,8 +65,10 @@ extends CrossScalaSparkModule with PublishModule {
   def repositories = super.repositories ++
     Seq(MavenRepository("https://dl.bintray.com/spark-packages/maven"))
 
-  def compileIvyDeps = Agg(ivy"org.apache.spark::spark-sql:${crossSparkVersion}")
-
+  def compileIvyDeps = Agg(
+    ivy"com.github.dwickern::scala-nameof:1.0.3",
+    ivy"org.apache.spark::spark-sql:${crossSparkVersion}"
+  )
 
   object test extends Tests {
     val majorMinorVersion = crossScalaVersion.split("\\.").dropRight(1).mkString(".")
@@ -74,7 +76,8 @@ extends CrossScalaSparkModule with PublishModule {
       ivy"com.lihaoyi::utest:0.6.3",
       ivy"org.apache.spark::spark-sql:${crossSparkVersion}",
       ivy"MrPowers:spark-fast-tests:0.17.1-s_${majorMinorVersion}",
-      ivy"mrpowers:spark-daria:0.26.1-s_${majorMinorVersion}"
+      ivy"mrpowers:spark-daria:0.26.1-s_${majorMinorVersion}",
+      ivy"com.github.dwickern::scala-nameof:1.0.3"
     )
     def testFrameworks = Seq("utest.runner.Framework")
   }
