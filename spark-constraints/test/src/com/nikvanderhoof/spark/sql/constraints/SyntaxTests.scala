@@ -12,7 +12,7 @@ object SyntaxTests extends TestSuite with UtestSparkSession {
   val peopleDF = Seq(
     (1, "Alice", 25),
     (2, "Bob", 20),
-    (3, "Carol", 26)
+    (3, "Carol", -1)
   ).toDF("id", "name", "age")
 
   val booksDF = Seq(
@@ -24,7 +24,7 @@ object SyntaxTests extends TestSuite with UtestSparkSession {
   val bookAuthorsDF = Seq(
     (1, 1),
     (2, 2),
-    (3, 3)
+    (3, 4)
   ).toDF("people_id", "book_id")
 
   val tests = Tests {
@@ -35,9 +35,10 @@ object SyntaxTests extends TestSuite with UtestSparkSession {
         notNull(col("name"))
         notNull('age)
       } match {
-        case ConstrainedDataset(name, data, violations) =>
+        case cd @ ConstrainedDataset(name, data, violations) =>
           assert(name == "peopleDF")
-          assert(violations.size == 0)
+          assert(violations.size == 1)
+          cd.showViolations
       }
 
       constrain(booksDF) {
@@ -45,19 +46,21 @@ object SyntaxTests extends TestSuite with UtestSparkSession {
         notNull('title)
         unique('title)
       } match {
-        case ConstrainedDataset(name, data, violations) =>
+        case cd @ ConstrainedDataset(name, data, violations) =>
           assert(name == "booksDF")
           assert(violations.size == 0)
+          cd.showViolations
       }
 
       constrain(bookAuthorsDF) {
         primaryKey('people_id, 'book_id)
         foreignKey('people_id) references peopleDF at 'id
-        foreignKey('people_id) references booksDF at 'id
+        foreignKey('book_id) references booksDF at 'id
       } match {
-        case ConstrainedDataset(name, data, violations) =>
+        case cd @ ConstrainedDataset(name, data, violations) =>
           assert(name == "bookAuthorsDF")
-          assert(violations.size == 0)
+          assert(violations.size == 1)
+          cd.showViolations
       }
     }
   }

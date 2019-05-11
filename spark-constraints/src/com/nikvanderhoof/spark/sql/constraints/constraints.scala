@@ -72,6 +72,13 @@ class ConstrainedDataset[T](data: NamedDataset[T],
   }
   override def toString: String =
     s"ConstrainedDataset(${data.name}, ${data.dataset}, $constraints)"
+
+  def showViolations: Unit = {
+    for ((name, violation) <- violations) {
+      println(name)
+      violation.show
+    }
+  }
 }
 
 object ConstrainedDataset {
