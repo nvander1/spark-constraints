@@ -1,4 +1,4 @@
-# Spark Constraints
+# Spark Constraints <img src=./logo.png alt="spark-constraints" width="64">
 
 SQL-like constraints for your Spark datasets!
 
@@ -19,33 +19,96 @@ This puts you in the uncomfortable position of either having to figure out what 
 
 spark-constraints saves you from fighting with database validations when loading data from Spark into a database.
 
+## Getting Started
+
+Use the following to install spark-constraints in an ammonite repl:
+```scala
+interp.repositories() ++=
+  Seq(coursier.MavenRepository("https://oss.sonatype.org/content/repositories/snapshots"))
+
+import $ivy.`com.nikvanderhoof::spark-constraints:0.1.0_spark2.4-SNAPSHOT`
+```
+
+The following in a Mill build:
+```scala
+def repositories = super.repositories ++
+  Seq(coursier.MavenRepository("https://oss.sonatype.org/content/repositories/snapshots"))
+
+ivy"com.nikvanderhoof::spark-constraints:0.1.0_spark2.4-SNAPSHOT"
+```
+
+And the following in Sbt:
+```scala
+resolvers += "snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+
+"com.nikvanderhoof" %% "spark-constraints" % "0.1.0_spark2.4-SNAPSHOT"
+```
+
 ### Example
 
 ```scala
 ...
-import com.nikvanderhoof.spark.sql.constraints.syntax._
+import com.nikvanderhoof.spark.sql.constraints._
 import spark.implicits._ // so we can specify columns via Symbols
 
-val peopleDF: DataFrame = ...
-val friendsDF: DataFrame = ...
+val peopleDF = Seq(
+  (1, "Alice", 25),
+  (2, "Bob", 20),
+  (3, "Carol", -1)    // A negative age we can catch
+).toDF("id", "name", "age")
 
-peopleDF
-  .addConstraint(primaryKey('id))
-  .addConstraint(check(expr("age >= 0")))
-  .addConstraint(notNull('name, 'age))
+val booksDF = Seq(
+  (1, "Introduction to Programming"),
+  (2, "Number Systems"),
+  (3, "Partial Differential Equations")
+).toDF("id", "title")
 
-peopleDF.constraints.foreach(println)
+val bookAuthorsDF = Seq(
+  (1, 1),
+  (2, 2),
+  (3, 4)    // Let's add a foreign key violation for demonstration
+).toDF("people_id", "book_id")
+
+val peopleResults = constrain(peopleDF) {
+  primaryKey('id)
+  check(col("age") >= 0 && col("age") < 120)
+  notNull(col("name"))
+  notNull('age)
+}
+
+val booksResults = constrain(booksDF) {
+  primaryKey('id)
+  notNull('title)
+  unique('title)
+}
+
+val bookAuthorsResults = constrain(bookAuthorsDF) {
+  primaryKey('people_id, 'book_id)
+  foreignKey('people_id) references peopleDF at 'id
+  foreignKey('people_id) references booksDF at 'id
+}
+
+peopleResults.showViolations
+booksResults.showViolations
+bookAuthorsResults.showViolations
 ```
 
-You can specify names for constraints if you don't want the auto generated ones.
+Will print out the following information:
 
-```scala
-friendsDF
-  .addConstraint("PK", primaryKey('person_a, 'person_b))
-  .addConstraint("FK_a", foreignKey('person_a) references peopleDF at 'id)
-  .addConstraint("FK_b", foreignKey('person_b) references peopleDF at 'id)
+```
+Check(peopleDF, ((age >= 0) AND (age < 120)))
++---+-----+---+
+| id| name|age|
++---+-----+---+
+|  3|Carol| -1|
++---+-----+---+
 
-friendsDF.constraints.foreach(println)
+ForeignKey(bookAuthorsDF, book_id, booksDF, id)
++---------+-------+
+|people_id|book_id|
++---------+-------+
+|        3|      4|
++---------+-------+
 ```
 
 ## Building and Testing

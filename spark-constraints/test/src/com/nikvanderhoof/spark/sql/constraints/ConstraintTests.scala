@@ -11,14 +11,14 @@ object ConstraintTests extends TestSuite with UtestSparkSession with DataFrameCo
 
   import spark.implicits._
 
-  def assertConstraintViolated(constraint: Constraint[_], violations: Dataset[_]) = {
+  def assertConstraintViolated[T](constraint: Constraint[T], violations: Dataset[T]) = {
     assert(constraint.isViolated)
     assertSmallDataFrameEquality(constraint.violations, violations.toDF)
   }
 
   val tests = Tests {
     "check(true) should not flag any rows as violations" - {
-      def testCheckTrue(ds: Dataset[_]) = {
+      def testCheckTrue[T](ds: Dataset[T]) = {
         val constraint = Check(ds, lit(true))
         assert(constraint.holds)
       }
@@ -29,7 +29,7 @@ object ConstraintTests extends TestSuite with UtestSparkSession with DataFrameCo
     }
 
     "check(false) should flag every row as a violation" - {
-      def testCheckFalse(ds: Dataset[_]) = {
+      def testCheckFalse[T](ds: Dataset[T]) = {
         val constraint = Check(ds, lit(false))
         assertConstraintViolated(constraint, ds)
       }
