@@ -56,37 +56,37 @@ val peopleDF = Seq(
   (2, "Bob", 20),
   (3, "Carol", -1)    // A negative age we can catch
 ).toDF("id", "name", "age")
+  .as("people")
 
 val booksDF = Seq(
   (1, "Introduction to Programming"),
   (2, "Number Systems"),
   (3, "Partial Differential Equations")
 ).toDF("id", "title")
+  .as("books")
 
 val bookAuthorsDF = Seq(
   (1, 1),
   (2, 2),
   (3, 4)    // Let's add a foreign key violation for demonstration
 ).toDF("people_id", "book_id")
+  .as("book_authors")
 
-val peopleResults = constrain(peopleDF) {
-  primaryKey('id)
-  check(col("age") >= 0 && col("age") < 120)
-  notNull(col("name"))
-  notNull('age)
-}
+val peopleResults = peopleDF
+  .primaryKey('id)
+  .check(col("age") >= 0 && col("age") < 120)
+  .notNull(col("name"))
+  .notNull('age)
 
-val booksResults = constrain(booksDF) {
-  primaryKey('id)
-  notNull('title)
-  unique('title)
-}
+val booksResults = booksDF
+  .primaryKey('id)
+  .notNull('title)
+  .unique('title)
 
-val bookAuthorsResults = constrain(bookAuthorsDF) {
-  primaryKey('people_id, 'book_id)
-  foreignKey('people_id) references peopleDF at 'id
-  foreignKey('people_id) references booksDF at 'id
-}
+val bookAuthorsResults = bookAuthorsDF
+  .primaryKey('people_id, 'book_id)
+  .foreignKey('people_id) references peopleDF at 'id
+  .foreignKey('people_id) references booksDF at 'id
 
 peopleResults.showViolations
 booksResults.showViolations
@@ -96,14 +96,14 @@ bookAuthorsResults.showViolations
 Will print out the following information:
 
 ```
-Check(peopleDF, ((age >= 0) AND (age < 120)))
+Check(people, ((age >= 0) AND (age < 120)))
 +---+-----+---+
 | id| name|age|
 +---+-----+---+
 |  3|Carol| -1|
 +---+-----+---+
 
-ForeignKey(bookAuthorsDF, book_id, booksDF, id)
+ForeignKey(book_authors, book_id, books, id)
 +---------+-------+
 |people_id|book_id|
 +---------+-------+

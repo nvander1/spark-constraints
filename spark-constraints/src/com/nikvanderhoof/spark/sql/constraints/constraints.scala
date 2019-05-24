@@ -79,11 +79,40 @@ class ConstrainedDataset[T](data: NamedDataset[T],
       violation.show
     }
   }
+
+  def add(f: NamedDataset[T] => Constraint[T]): ConstrainedDataset[T] = {
+    ConstrainedDataset(data, constraints :+ f(data))
+  }
+
+  def primaryKey(columns: Column *): ConstrainedDataset[T] =
+    add(data => PrimaryKey(data, columns))
+
+  def unique(columns: Column *): ConstrainedDataset[T] =
+    add(data => Unique(data, columns))
+
+  def notNull(columns: Column *): ConstrainedDataset[T] =
+    add(data => NotNull(data, columns))
+
+  def check(column: Column): ConstrainedDataset[T] =
+    add(data => Check(data, column))
+
+  def foreignKey(columns: Column *) = new {
+    def references[U](refData: Dataset[U]) = new {
+      def at(refColumns: Column *) =
+        add(data => ForeignKey(data, columns, refData, refColumns))
+    }
+  }
 }
 
 object ConstrainedDataset {
   def apply[T](data: NamedDataset[T], constraints: Seq[Constraint[T]])
   : ConstrainedDataset[T] = new ConstrainedDataset(data, constraints)
+
+  def apply[T](data: Dataset[T], constraints: Seq[Constraint[T]])
+  : ConstrainedDataset[T] = apply(dataset2NamedDataset(data), constraints)
+
+  def apply[T](data: Dataset[T]): ConstrainedDataset[T] =
+    apply(data, Nil)
 
   def unapply[T](constrainedData: ConstrainedDataset[T])
   : Option[(String, Dataset[T], Seq[(String, DataFrame)])] = {
