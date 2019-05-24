@@ -125,7 +125,7 @@ To build the project and run the tests, make sure you have mill installed
 and run the following at the project root:
 
 ```
-./scripts/test.sh
+mill `__`.test
 ```
 
 To compile/test just a specific version use:
