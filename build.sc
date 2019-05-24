@@ -66,8 +66,11 @@ extends CrossScalaSparkModule with PublishModule {
     Seq(MavenRepository("https://dl.bintray.com/spark-packages/maven"))
 
   def compileIvyDeps = Agg(
-    ivy"com.github.dwickern::scala-nameof:1.0.3",
     ivy"org.apache.spark::spark-sql:${crossSparkVersion}"
+  )
+
+  def ivyDeps = Agg(
+    ivy"com.github.dwickern::scala-nameof:1.0.3"
   )
 
   object test extends Tests {
