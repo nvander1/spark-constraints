@@ -131,8 +131,8 @@ mill __.test
 To compile/test just a specific version use:
 
 ```
-mill "spark-constraints[2.11.8,2.3.0].compile
-mill "spark-constraints[2.11.8,2.3.0].test
+mill "spark-constraints[2.11.8,2.3.0].compile"
+mill "spark-constraints[2.11.8,2.3.0].test"
 ```
 
 ## Related Work
