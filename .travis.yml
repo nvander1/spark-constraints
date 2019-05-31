@@ -6,8 +6,8 @@ git:
   depth: false
 
 script:
-  - sh -c '(echo "#!/usr/bin/env sh" && curl -L `curl -s https://api.github.com/repos/lihaoyi/mill/releases/latest | grep "browser_download_url" | head -n 1 | cut -d : -f 2,3 | tr -d \" | cut -b 1 --complement`) > ~/mill && chmod +x ~/mill'
-  - export PATH=~/mill:$PATH
+  - curl -L -o ~/bin/mill https://github.com/lihaoyi/mill/releases/download/0.4.0/0.4.0 && chmod +x ~/bin/mill
+  - export PATH=~/bin/mill:$PATH
   - mill __.test
 cache:
   directories:
