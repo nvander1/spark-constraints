@@ -1,41 +1,10 @@
+import $ivy.`com.nikvanderhoof::mill-spark:0.1.0`
+
+import com.nikvanderhoof.mill._
+import coursier.MavenRepository
 import mill._, scalalib._, publish._
 import mill.scalalib.api.Util.{scalaBinaryVersion => binaryVersion}
 import mill.eval.PathRef
-import coursier.MavenRepository
-
-
-
-object CrossBase {
-  def cartesianProduct[T](seqs: Seq[Seq[T]]): Seq[Seq[T]] = {
-    seqs.foldLeft(Seq(Seq.empty[T]))((b, a) => b.flatMap(i => a.map(j => i ++ Seq(j))))
-  }
-
-  def parts(cs: Seq[String]) = cs.map(c => c.split('.').inits.filter(_.nonEmpty).toSeq)
-
-  def crossVersionPaths(versions: Seq[String], f: String => ammonite.ops.Path) =
-    cartesianProduct(parts(versions)).map { segmentGroups =>
-      segmentGroups.map(_.mkString("."))
-    }.map(xs => PathRef(f(xs.mkString("__"))))
-}
-
-trait CrossScalaSparkModule extends ScalaModule {
-  def crossScalaVersion: String
-  def crossSparkVersion: String
-  def scalaVersion = crossScalaVersion
-  override def millSourcePath = super.millSourcePath / ammonite.ops.up / ammonite.ops.up
-  override def sources = T.sources {
-    super.sources() ++
-    CrossBase.crossVersionPaths(
-      Seq(crossScalaVersion, crossSparkVersion), s => millSourcePath / s"src-$s")
-  }
-  trait Tests extends super.Tests {
-    override def sources = T.sources {
-      super.sources() ++
-      CrossBase.crossVersionPaths(
-        Seq(crossScalaVersion, crossSparkVersion), s => millSourcePath / s"src-$s")
-    }
-  }
-}
 
 val crossMatrix = for {
   scala  <- Seq("2.11.8", "2.12.4")
