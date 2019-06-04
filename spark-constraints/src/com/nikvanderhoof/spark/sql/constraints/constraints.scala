@@ -84,20 +84,20 @@ class ConstrainedDataset[T](data: NamedDataset[T],
     ConstrainedDataset(data, constraints :+ f(data))
   }
 
-  def primaryKey(columns: Column *): ConstrainedDataset[T] =
+  def withPrimaryKey(columns: Column *): ConstrainedDataset[T] =
     add(data => PrimaryKey(data, columns))
 
-  def unique(columns: Column *): ConstrainedDataset[T] =
+  def withUnique(columns: Column *): ConstrainedDataset[T] =
     add(data => Unique(data, columns))
 
-  def notNull(columns: Column *): ConstrainedDataset[T] =
+  def withNotNull(columns: Column *): ConstrainedDataset[T] =
     add(data => NotNull(data, columns))
 
-  def check(column: Column): ConstrainedDataset[T] =
+  def withCheck(column: Column): ConstrainedDataset[T] =
     add(data => Check(data, column))
 
-  def foreignKey(columns: Column *) = new {
-    def references[U](refData: Dataset[U]) = new {
+  def withForeignKey(columns: Column *) = new {
+    def to[U](refData: Dataset[U]) = new {
       def at(refColumns: Column *) =
         add(data => ForeignKey(data, columns, refData, refColumns))
     }

@@ -73,20 +73,20 @@ val bookAuthorsDF = Seq(
   .as("book_authors")
 
 val peopleResults = peopleDF
-  .primaryKey('id)
-  .check(col("age") >= 0 && col("age") < 120)
-  .notNull(col("name"))
-  .notNull('age)
+  .withPrimaryKey('id)
+  .withCheck(col("age") >= 0 && col("age") < 120)
+  .withNotNull(col("name"))
+  .withNotNull('age)
 
 val booksResults = booksDF
-  .primaryKey('id)
-  .notNull('title)
-  .unique('title)
+  .withPrimaryKey('id)
+  .withNotNull('title)
+  .withUnique('title)
 
 val bookAuthorsResults = bookAuthorsDF
-  .primaryKey('people_id, 'book_id)
-  .foreignKey('people_id) references peopleDF at 'id
-  .foreignKey('people_id) references booksDF at 'id
+  .withPrimaryKey('people_id, 'book_id)
+  .withForeignKey('people_id) to peopleDF at 'id
+  .withForeignKey('people_id) to booksDF at 'id
 
 peopleResults.showViolations
 booksResults.showViolations
