@@ -96,8 +96,8 @@ class ConstrainedDataset[T](data: NamedDataset[T],
   def withCheck(column: Column): ConstrainedDataset[T] =
     add(data => Check(data, column))
 
-  def withForeignKey(columns: Column *) = new {
-    def to[U](refData: Dataset[U]) = new {
+  case class withForeignKey(columns: Column *) {
+    case class to[U](refData: Dataset[U]) {
       def at(refColumns: Column *) =
         add(data => ForeignKey(data, columns, refData, refColumns))
     }
