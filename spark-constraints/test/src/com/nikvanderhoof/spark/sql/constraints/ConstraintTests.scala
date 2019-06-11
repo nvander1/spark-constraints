@@ -136,6 +136,12 @@ object ConstraintTests extends TestSuite with UtestSparkSession with DataFrameCo
         val constraint = ForeignKey(a, Seq(a("id")), b, Seq(b("id")))
         assert(constraint.holds)
       }
+      "when there are none (nulls do not count)" - {
+        val a = spark.sql("select cast(null as bigint) as id")
+        val b = spark.range(0, 100)
+        val constraint = ForeignKey(a, Seq(a("id")), b, Seq(b("id")))
+        assert(constraint.holds)
+      }
       "when the key is not present in the referenced table" - {
         val a = spark.range(0, 100)
         val b = spark.range(20, 100)

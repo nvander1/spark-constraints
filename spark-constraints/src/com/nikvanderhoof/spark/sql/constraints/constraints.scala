@@ -49,7 +49,10 @@ extends Constraint[T] {
       .zip(refColumns)
       .map { case (a, b) => a === b }
       .fold(lit(true)) { case (acc, next) => acc && next }
-    data.dataset.join(refData.dataset, joinCondition, "leftanti")
+    data
+      .dataset
+      .where(columns.map(_ isNotNull).reduce(_ && _))
+      .join(refData.dataset, joinCondition, "leftanti")
   }
   override def toString: String = {
     val name = data.name
