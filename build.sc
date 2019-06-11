@@ -1,4 +1,5 @@
 import $ivy.`com.nikvanderhoof::mill-spark:0.1.0`
+import $file.travis
 
 import com.nikvanderhoof.mill._
 import coursier.MavenRepository
@@ -11,6 +12,10 @@ val crossMatrix = for {
   spark <- Seq("2.3.0", "2.4.0")
   if !(scala >= "2.12.0" && spark < "2.4.0")
 } yield (scala, spark)
+
+def updateTravisYml() = T.command {
+  travis.updateTravisYml(crossMatrix)
+}
 
 object `spark-constraints` extends Cross[SparkConstraintModule](crossMatrix: _*)
 
