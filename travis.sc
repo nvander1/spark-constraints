@@ -9,6 +9,8 @@ dist: trusty
 git:
   depth: false
 
+matrix:
+  include:
 ${
   crossMatrix map { case (scala, spark) =>
     Seq(s"scala: $scala", s"env: SPARK=$spark")
