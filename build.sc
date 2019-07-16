@@ -21,7 +21,7 @@ object `spark-constraints` extends Cross[SparkConstraintModule](crossMatrix: _*)
 
 class SparkConstraintModule(val crossScalaVersion: String, val crossSparkVersion: String)
 extends CrossScalaSparkModule with PublishModule {
-  def publishVersion = s"0.1.0_spark${binaryVersion(crossSparkVersion)}-SNAPSHOT"
+  def publishVersion = s"0.1.0_spark${binaryVersion(crossSparkVersion)}"
 
   def artifactName = "spark-constraints"
 

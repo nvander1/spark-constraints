@@ -25,25 +25,17 @@ spark-constraints saves you from fighting with database validations when loading
 
 Use the following to install spark-constraints in an ammonite repl:
 ```scala
-interp.repositories() ++=
-  Seq(coursier.MavenRepository("https://oss.sonatype.org/content/repositories/snapshots"))
-
-import $ivy.`com.nikvanderhoof::spark-constraints:0.1.0_spark2.4-SNAPSHOT`
+import $ivy.`com.nikvanderhoof::spark-constraints:0.1.0_spark2.4`
 ```
 
 The following in a Mill build:
 ```scala
-def repositories = super.repositories ++
-  Seq(coursier.MavenRepository("https://oss.sonatype.org/content/repositories/snapshots"))
-
-ivy"com.nikvanderhoof::spark-constraints:0.1.0_spark2.4-SNAPSHOT"
+ivy"com.nikvanderhoof::spark-constraints:0.1.0_spark2.4"
 ```
 
 And the following in Sbt:
 ```scala
-resolvers += "snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
-
-"com.nikvanderhoof" %% "spark-constraints" % "0.1.0_spark2.4-SNAPSHOT"
+"com.nikvanderhoof" %% "spark-constraints" % "0.1.0_spark2.4"
 ```
 
 ### Example
