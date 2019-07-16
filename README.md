@@ -2,6 +2,8 @@
 
 SQL-like constraints for your Spark datasets!
 
+[![Build Status](https://travis-ci.org/nvander1/spark-constraints.svg?branch=develop)](https://travis-ci.org/nvander1/spark-constraints)
+
 ## Introduction
 
 Schemas and case classes let you limit the types of data stored in a
